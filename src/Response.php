@@ -164,7 +164,7 @@ final class Response
      * @param array $params
      * @return ResponseInterface
      */
-    public function view(string $template, array $params = []): ResponseInterface
+    public static function view(string $template, array $params = []): ResponseInterface
     {
         return self::html(service(RendererInterface::class)->render($template, $params));
     }
@@ -175,7 +175,7 @@ final class Response
      * @param bool $movedPermanently
      * @return ResponseInterface
      */
-    public function route(string $name, array $attributes = [], bool $movedPermanently = false): ResponseInterface
+    public static function route(string $name, array $attributes = [], bool $movedPermanently = false): ResponseInterface
     {
         return self::redirect(service(GeneratorInterface::class)->generate($name, $attributes), $movedPermanently);
     }
