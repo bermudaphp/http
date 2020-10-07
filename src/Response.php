@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App;
+namespace Bermuda\Http;
 
 
 use Bermuda\Router\GeneratorInterface;
@@ -16,7 +16,7 @@ use function Bermuda\service;
 
 /**
  * Class Response
- * @package App
+ * @package Bermuda\Http
  */
 final class Response
 {
