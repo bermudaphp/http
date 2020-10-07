@@ -152,11 +152,11 @@ final class Response
     {
         return self::writeFile($response ?? self::make(), $filename, $options['mimeType'] ?? null)
             ->withHeader(ResponseHeader::ContentDescription, 'File Transfer')
-            ->withHeader(ResponseHeader::ContentDisposition, 'attachment; filename=' . ($options['filename'] ?? basename($filename)))
-            ->withHeader('Content-Transfer-Encoding', 'binary')
-            ->withHeader('Expires', '0')
-            ->withHeader('Cache-Control', 'must-revalidate')
-            ->withHeader('Pragma', 'public');
+            ->withHeader(ResponseHeader::ContentDisposition, ContentDisposition::attachment($options['filename'] ?? basename($filename)))
+            ->withHeader(ResponseHeader::ContentTransferEncoding, 'binary')
+            ->withHeader(ResponseHeader::expires, '0')
+            ->withHeader(ResponseHeader::CacheControl, 'must-revalidate')
+            ->withHeader(ResponseHeader::pragma, 'public');
     }
 
     /**
