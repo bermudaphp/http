@@ -128,7 +128,12 @@ final class Response
      */
     public static function writeFile(ResponseInterface $response, string $filename, ?string $mimeType = null): ResponseInterface
     {
-        self::writeStream($response->getBody(), fopen($filename, 'r'), $filesize = 0);       
+        if (($fh = fopen($filename, 'r')) === false)
+        {
+            throw new RuntimeException(sprintf('File: %s is missing or invalid', $filename));
+        }
+        
+        self::writeStream($response->getBody(), $fh, $filesize = 0);       
         return $response->withHeader(ResponseHeader::ContentType, $mimeType ?? mime_content_type($filename))
             ->withHeader(ResponseHeader::ContentLength, $filesize);
     }
