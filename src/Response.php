@@ -31,14 +31,14 @@ final class Response
      */
     public static function write(ResponseInterface $response, string $content, string $contentType): ResponseInterface
     {
-        static::writeSream($response->getBody(), $content);
+        static::writeStream($response->getBody(), $content);
         return $response->withHeader(ResponseHeader::ContentType, $contentType);
     }
 
     /**
      * @param StreamInterface $stream
      */
-    private static function writeSream(StreamInterface $stream, $content, & $size = 0): void
+    private static function writeStream(StreamInterface $stream, $content, & $size = 0): void
     {
         if (!$stream->isWritable())
         {
