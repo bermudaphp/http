@@ -68,6 +68,7 @@ final class Response
     
      /**
      * @param mixed $content
+     * @param int $options
      * @return ResponseInterface
      * @throws \JsonException
      */
