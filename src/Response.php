@@ -65,6 +65,16 @@ final class Response
     {
         return self::writeJson(self::make(), $content);
     }
+    
+     /**
+     * @param mixed $content
+     * @return ResponseInterface
+     * @throws \JsonException
+     */
+    public static function asJson($content, int $options = 0): ResponseInterface
+    {
+        return self::writeJson(self::make(), json_encode($content, $options | JSON_THROW_ON_ERROR));
+    }
 
     /**
      * @param string $content
