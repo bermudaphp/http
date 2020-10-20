@@ -31,20 +31,33 @@ final class Response
      */
     public static function write(ResponseInterface $response, string $content, string $contentType): ResponseInterface
     {
-        static::isWritable($stream = $response->getBody());
-        $stream->write($content);
+        static::writeSream($response->getBody(), $content);
         return $response->withHeader(ResponseHeader::ContentType, $contentType);
     }
 
     /**
      * @param StreamInterface $stream
      */
-    private static function isWritable(StreamInterface $stream): void
+    private static function writeSream(StreamInterface $stream, $content, & $size = 0): void
     {
         if (!$stream->isWritable())
         {
             throw new \RuntimeException('Response is un writable');
         }
+        
+        if (!is_string($content))
+        {
+            while (!feof($content))
+            {
+                $size += $stream->write(fread($content, 8192));
+            }
+
+            fclose($resource);
+            
+            return;
+        }
+        
+        $size += $stream->write($content);
     }
 
     /**
@@ -115,20 +128,7 @@ final class Response
      */
     public static function writeFile(ResponseInterface $response, string $filename, ?string $mimeType = null): ResponseInterface
     {
-        self::isWritable($body = $response->getBody());
-
-        $filesize = 0;
-
-        if ($resource = fopen($filename, 'r'))
-        {
-            while (!feof($resource))
-            {
-                $filesize += $response->getBody()->write(fread($resource, 8192));
-            }
-
-            fclose($resource);
-        }
-
+        self::writeStream($response->getBody(), fopen($filename, 'r'), $filesize = 0);       
         return $response->withHeader(ResponseHeader::ContentType, $mimeType ?? mime_content_type($filename))
             ->withHeader(ResponseHeader::ContentLength, $filesize);
     }
