@@ -17,5 +17,6 @@ final class ContentType
     public const header = 'Content-Type';
 
     public const html = 'text/html';
+    public const text = 'text/plain';
     public const json = 'application/json';
 }
