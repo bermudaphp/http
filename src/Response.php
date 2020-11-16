@@ -79,6 +79,15 @@ final class Response
         return self::writeJson(self::make(), $content);
     }
     
+    /**
+     * @param string $content
+     * @return ResponseInterface
+     */
+    public static function text(string $content): ResponseInterface
+    {
+        return self::writeText(self::make(), $content);
+    }
+    
      /**
      * @param mixed $content
      * @param int $options
@@ -117,6 +126,16 @@ final class Response
     public static function writeJson(ResponseInterface $response, string $content): ResponseInterface
     {
         return self::write($response, $content, ContentType::json);
+    }
+    
+    /**
+     * @param ResponseInterface $response
+     * @param string $content
+     * @return ResponseInterface
+     */
+    public static function writeText(ResponseInterface $response, string $content): ResponseInterface
+    {
+        return self::write($response, $content, ContentType::text);
     }
 
     /**
