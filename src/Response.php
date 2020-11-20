@@ -42,7 +42,7 @@ final class Response
     {
         if (!$stream->isWritable())
         {
-            throw new \RuntimeException('Response is un writable');
+            throw new \RuntimeException('Stream is un writable');
         }
         
         if (!is_string($content))
