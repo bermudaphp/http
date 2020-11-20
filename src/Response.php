@@ -52,7 +52,7 @@ final class Response
                 $size += $stream->write(fread($content, 8192));
             }
 
-            fclose($resource);
+            fclose($content);
             
             return;
         }
@@ -151,8 +151,8 @@ final class Response
         {
             throw new RuntimeException(sprintf('File: %s is missing or invalid', $filename));
         }
-        
-        self::writeStream($response->getBody(), $fh, $filesize = 0);       
+
+        self::writeStream($response->getBody(), $fh, $filesize);
         return $response->withHeader(ResponseHeader::ContentType, $mimeType ?? mime_content_type($filename))
             ->withHeader(ResponseHeader::ContentLength, $filesize);
     }
