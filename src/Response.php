@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Bermuda\Http;
-
+namespace Bermuda\HTTP;
 
 use Bermuda\Router\GeneratorInterface;
 use Bermuda\Templater\RendererInterface;
@@ -10,9 +8,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
-
 use function Bermuda\service;
-
 
 /**
  * Class Response
