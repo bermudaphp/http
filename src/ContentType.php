@@ -1,8 +1,6 @@
 <?php
 
-
-namespace Bermuda\Http;
-
+namespace Bermuda\HTTP;
 
 /**
  * Class ContentType
