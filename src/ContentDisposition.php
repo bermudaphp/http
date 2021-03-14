@@ -1,12 +1,10 @@
 <?php
 
-
-namespace Bermuda\Http;
-
+namespace Bermuda\HTTP;
 
 /**
  * Class ContentDisposition
- * @package Bermuda\Http
+ * @package Bermuda\HTTP
  */
 final class ContentDisposition
 {
