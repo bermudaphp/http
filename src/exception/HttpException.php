@@ -69,6 +69,6 @@ class HttpException extends \Exception
             $statusCode = 500;
         }
       
-        parent::__construct($reasonPhrase ?? (self::$status[$statusCode] ?? 'HTTP Exception'), $statusCode);
+        parent::__construct($reasonPhrase ?? self::$status[$statusCode]), $statusCode);
     }
 }
