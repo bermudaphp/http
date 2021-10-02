@@ -53,13 +53,17 @@ final class Responder
     }
 
     /**
-     * @param string|null $content
-     * @param string|null $contentType
+     * @param null $content
      * @return ResponseInterface
+     * @throws JsonException
      */
-    public function serverError(string $content = null, string $contentType = null): ResponseInterface
+    public function serverError($content = null): ResponseInterface
     {
-        return $this->respond(500, $content, $contentType);
+        if (is_string($content) || $content instanceof Stringable) {
+            return $this->respond(500, $content);
+        }
+
+        return $this->json(500, $content);
     }
 
     /**
@@ -115,7 +119,7 @@ final class Responder
     public function bad($content): ResponseInterface
     {
         if (is_string($content) || $content instanceof Stringable) {
-            return $this->respond(200, $content);
+            return $this->respond(400, $content);
         }
 
         return $this->json(400, $content);
