@@ -4,7 +4,7 @@ namespace Bermuda\HTTP;
 
 use JsonException;
 use Bermuda\String\Json;
-use Bermuda\Headers\Header;
+use Bermuda\HTTP\Headers\Header;
 use Psr\Container\ContainerInterface;
 use Bermuda\Detector\FinfoDetector;
 use Bermuda\Detector\MimeTypeDetector;
