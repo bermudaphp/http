@@ -6,6 +6,7 @@ use JsonException;
 use Bermuda\String\Json;
 use Bermuda\Headers\Header;
 use Psr\Container\ContainerInterface;
+use Bermuda\Detector\FinfoDetector;
 use Bermuda\Detector\MimeTypeDetector;
 use Bermuda\Detector\MimeTypes\Text;
 use Bermuda\Detector\MimeTypes\Application;
