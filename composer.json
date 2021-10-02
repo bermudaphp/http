@@ -9,6 +9,7 @@
     "require": {
         "php": "^8.0",
         "psr/http-factory": "^1.0.1",
-        "bermudaphp/stringy": "^2.0"
+        "bermudaphp/stringy": "^2.0",
+        "bermudaphp/detector": "^1.0"
     }
 }
