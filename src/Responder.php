@@ -35,9 +35,13 @@ final class Responder
      * @param string|null $contentType
      * @return ResponseInterface
      */
-    public function notFound(string $content = null, string $contentType = null): ResponseInterface
+    public function notFound($content = null): ResponseInterface
     {
-        return $this->respond(404, $content, $contentType);
+        if (is_string($content) || $content instanceof Stringable || $content === null) {
+            return $this->respond(404, $content);
+        }
+        
+        return $this->json(404, $content);
     }
 
     /**
@@ -59,10 +63,10 @@ final class Responder
      */
     public function serverError($content = null): ResponseInterface
     {
-        if (is_string($content) || $content instanceof Stringable) {
+        if (is_string($content) || $content instanceof Stringable || $content === null) {
             return $this->respond(500, $content);
         }
-
+        
         return $this->json(500, $content);
     }
 
@@ -104,10 +108,10 @@ final class Responder
      */
     public function ok($content): ResponseInterface
     {
-        if (is_string($content) || $content instanceof Stringable) {
+        if (is_string($content) || $content instanceof Stringable || $content === null) {
             return $this->respond(200, $content);
         }
-
+        
         return $this->json(200, $content);
     }
 
@@ -118,10 +122,10 @@ final class Responder
      */
     public function bad($content): ResponseInterface
     {
-        if (is_string($content) || $content instanceof Stringable) {
+        if (is_string($content) || $content instanceof Stringable || $content === null) {
             return $this->respond(400, $content);
         }
-
+        
         return $this->json(400, $content);
     }
 
