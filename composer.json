@@ -7,7 +7,6 @@
         }
     },
     "require": {
-        "php": "^8.0",
-        "bermudaphp/app": "^1.0"
+        "php": "^8.0"
     }
 }
