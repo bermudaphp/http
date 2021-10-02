@@ -31,9 +31,9 @@ final class Responder
     }
 
     /**
-     * @param string|null $content
-     * @param string|null $contentType
+     * @param $content
      * @return ResponseInterface
+     * @throws JsonException
      */
     public function notFound($content = null): ResponseInterface
     {
@@ -57,7 +57,7 @@ final class Responder
     }
 
     /**
-     * @param null $content
+     * @param $content
      * @return ResponseInterface
      * @throws JsonException
      */
