@@ -4,12 +4,14 @@ namespace Bermuda\HTTP;
 
 use JsonException;
 use Bermuda\String\Json;
+use Bermuda\String\Stringable;
 use Bermuda\HTTP\Headers\Header;
 use Psr\Container\ContainerInterface;
 use Bermuda\Detector\FinfoDetector;
 use Bermuda\Detector\MimeTypeDetector;
 use Bermuda\Detector\MimeTypes\Text;
 use Bermuda\Detector\MimeTypes\Application;
+use Bermuda\HTTP\Headers\ContentDisposition;
 use Psr\Http\Message\{ResponseFactoryInterface, ResponseInterface, StreamInterface};
 
 final class Responder
@@ -20,29 +22,6 @@ final class Responder
     )
     {
         $this->detector = $detector ?? new FinfoDetector();
-    }
-
-    /**
-     * @param string $content
-     * @return ResponseInterface
-     */
-    public function html(string $content): ResponseInterface
-    {
-        return $this->respond(content: $content, contentType: Text::html);
-    }
-
-    /**
-     * @param $content
-     * @return ResponseInterface
-     * @throws JsonException
-     */
-    public function notFound($content = null): ResponseInterface
-    {
-        if (is_string($content) || $content instanceof Stringable || $content === null) {
-            return $this->respond(404, $content);
-        }
-        
-        return $this->json(404, $content);
     }
 
     /**
@@ -58,30 +37,22 @@ final class Responder
     }
 
     /**
-     * @param $content
-     * @return ResponseInterface
-     * @throws JsonException
-     */
-    public function serverError($content = null): ResponseInterface
-    {
-        if (is_string($content) || $content instanceof Stringable || $content === null) {
-            return $this->respond(500, $content);
-        }
-        
-        return $this->json(500, $content);
-    }
-
-    /**
      * @param int $code
-     * @param string|null $content
+     * @param $content
      * @param string|null $contentType
      * @return ResponseInterface
      */
-    public function respond(int $code = 200, ?string $content = null, ?string $contentType = null): ResponseInterface
+    public function respond(int $code = 200, $content = null, ?string $contentType = null): ResponseInterface
     {
         $response = $this->responseFactory->createResponse($code);
 
         if ($content !== null) {
+
+            if (!is_string($content) && !$content instanceof Stringable) {
+                $content = Json::encode($content);
+                $contentType = Application::json;
+            }
+
             ($response = $response->withHeader(Header::contentType, $contentType ??
                 $this->detector->detectMimeType($content)))
                 ->getBody()->write($content);
@@ -97,52 +68,13 @@ final class Responder
      * @param bool $permanent
      * @return ResponseInterface
      */
-    public function redirect(string $location, bool $permanent = false): ResponseInterface
+    public function redirect(string $location, int $code = 302): ResponseInterface
     {
-        return $this->respond($permanent ? 301 : 302)->withHeader(Header::location, $location);
-    }
-
-    /**
-     * @param $content
-     * @return ResponseInterface
-     * @throws JsonException
-     */
-    public function ok($content): ResponseInterface
-    {
-        if (is_string($content) || $content instanceof Stringable || $content === null) {
-            return $this->respond(200, $content);
-        }
-        
-        return $this->json(200, $content);
-    }
-
-    /**
-     * @param $content
-     * @return ResponseInterface
-     * @throws JsonException
-     */
-    public function bad($content): ResponseInterface
-    {
-        if (is_string($content) || $content instanceof Stringable || $content === null) {
-            return $this->respond(400, $content);
-        }
-        
-        return $this->json(400, $content);
-    }
-
-    /**
-     * @param int $code
-     * @param $content
-     * @return ResponseInterface
-     * @throws JsonException
-     */
-    public function json(int $code, $content): ResponseInterface
-    {
-        if (!Json::isJson($content)) {
-            $content = Json::encode($content);
+        if ($code < 300 || $code > 308){
+            $code = 302;
         }
 
-        return $this->respond($code, $content, Application::json);
+        return $this->respond($code)->withHeader(Header::location, $location);
     }
 
     /**
@@ -169,23 +101,15 @@ final class Responder
         return $this->respond(content: (string) $stream)
             ->withHeader(Header::contentDescription, 'File-transfer')
             ->withHeader(Header::contentDisposition, $disposition ?? ContentDisposition::inline($filename))
-            ->withHeader(Header::contentTransferEncoding, 'binary')
-            ->withHeader(Header::expires, 0)
-            ->withHeader(Header::cacheControl, 'must-revalidate')
-            ->withHeader(Header::pragma, 'public');
-    }
-
-    public function nginx(string $filename): ResponseInterface
-    {
-        return $this->respond()->withHeader('X-Accel-Redirect', $filename);
+            ->withHeader(Header::contentTransferEncoding, 'binary');
     }
 
     /**
-     * @param string $content
+     * @param string $filename
      * @return ResponseInterface
      */
-    public function text(string $content): ResponseInterface
+    public function nginx(string $filename): ResponseInterface
     {
-        return $this->respond(200, $content, Text::plain);
+        return $this->respond()->withHeader('X-Accel-Redirect', $filename);
     }
 }
