@@ -14,7 +14,7 @@ final class ContentDisposition
      */
     public static function attachment(string $filename): string
     {
-        return self::attachment . '; filename="' . $filename .'"';
+        return self::attachment . self::ensureValidName($filename);
     }
 
     /**
@@ -23,7 +23,13 @@ final class ContentDisposition
      */
     public static function inline(string $filename): string
     {
-        return self::inline . '; filename="' . $filename .'"';
+        return self::inline . self::ensureValidName($filename);
+    }
+
+    private static function ensureValidName(string $filename): string
+    {
+        return'filename="' . preg_replace('/[\x00-\x1F\x7F\"]/', ' ', $filename) . '"'
+            . "; filename*=UTF-8''" . rawurlencode($filename);
     }
 
     /**
