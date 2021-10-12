@@ -42,9 +42,9 @@ final class Responder
      * @param string|null $contentType
      * @return ResponseInterface
      */
-    public function respond(int $code = 200, $content = null, ?string $contentType = null): ResponseInterface
+    public function respond(?int $code = null, $content = null, ?string $contentType = null): ResponseInterface
     {
-        $response = $this->responseFactory->createResponse($code);
+        $response = $this->responseFactory->createResponse($code ?? $content === null ? 404 : 200);
 
         if ($content !== null) {
 
@@ -56,6 +56,10 @@ final class Responder
             ($response = $response->withHeader(Header::contentType, $contentType ??
                 $this->detector->detectMimeType($content)))
                 ->getBody()->write($content);
+
+            if ($code === null && Json::isEmpty($content)) {
+                $response = $response->withStatus(404);
+            }
 
             $response = $response->withHeader(Header::contentLength, (int) $response->getBody()->getSize());
         }
