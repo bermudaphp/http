@@ -57,7 +57,7 @@ final class Responder
                 $this->detector->detectMimeType($content)))
                 ->getBody()->write($content);
 
-            if ($code === null && Json::isEmpty($content)) {
+            if ($code === null && Json::isEmpty($content, false)) {
                 $response = $response->withStatus(404);
             }
 
