@@ -43,7 +43,7 @@ final class Responder
      */
     public function respond(?int $code = null, $content = null, ?string $contentType = null): ResponseInterface
     {
-        $response = $this->responseFactory->createResponse($code ?? $content === null ? 404 : 200);
+        $response = $this->responseFactory->createResponse($code ?? ($content === null ? 404 : 200));
 
         if ($content !== null) {
 
