@@ -64,8 +64,7 @@ class HttpException extends \Exception
   
     public function __construct(int $statusCode = 500, string $reasonPhrase = null)
     {
-        if ($statusCode < 400 || $statusCode >= 600)
-        {
+        if ($statusCode < 400 || $statusCode >= 600) {
             $statusCode = 500;
         }
       
