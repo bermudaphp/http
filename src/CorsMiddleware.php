@@ -24,7 +24,7 @@ final class CorsMiddleware implements MiddlewareInterface
         }
 
         if ($this->origins !== []) {
-            if (in_array('*', $this->origins)) {
+            if ($this->origins() === '*') {
                 $response = $response->withHeader('Access-Control-Allow-Origin', '*');
             } elseif (in_array($origin = $request->getHeader('origin')[0], $this->origins)) {
                 $response = $response->withHeader('Access-Control-Allow-Origin', $origin)
@@ -70,7 +70,7 @@ final class CorsMiddleware implements MiddlewareInterface
      */
     public function origins(string|array $origins = null): array|string
     {
-        $current = $this->origins === [] ? '*'
+        $current = $this->origins === [] ? []
             : (count($this->origins) == 1
                 ? $this->origins[0] : $this->origins);
 
