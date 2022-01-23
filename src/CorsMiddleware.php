@@ -24,7 +24,7 @@ final class CorsMiddleware implements MiddlewareInterface
         }
 
         if ($this->origins !== []) {
-            $origin = $request->getHeader('origin')[0] ?? null;
+            $origin = $request->getHeader('origin')[0];
             if (in_array($origin, $this->origins)) {
                 $response = $response->withHeader('Vary', $origin)
                     ->withHeader('Access-Control-Allow-Origin', $origin);
