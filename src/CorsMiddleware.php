@@ -19,8 +19,12 @@ final class CorsMiddleware implements MiddlewareInterface
     {
         $response = $handler->handle($request);
 
+        if (!$request->hasHeader('origin')) {
+            return $response;
+        }
+
         if ($this->origins !== []) {
-            $origin = $request->getHeader('origin')[0];
+            $origin = $request->getHeader('origin')[0] ?? null;
             if (in_array($origin, $this->origins)) {
                 $response = $response->withHeader('Vary', $origin)
                     ->withHeader('Access-Control-Allow-Origin', $origin);
@@ -57,7 +61,7 @@ final class CorsMiddleware implements MiddlewareInterface
     {
         ($self = new self())->origins($origins);
         $self->allowCredential = $allowCredential;
-        
+
         return $self;
     }
 
