@@ -24,13 +24,12 @@ final class CorsMiddleware implements MiddlewareInterface
         }
 
         if ($this->origins !== []) {
-            $origin = $request->getHeader('origin')[0];
-            if (in_array($origin, $this->origins)) {
-                $response = $response->withHeader('Vary', $origin)
-                    ->withHeader('Access-Control-Allow-Origin', $origin);
+            if (in_array('*', $this->origins)) {
+                $response = $response->withHeader('Access-Control-Allow-Origin', '*');
+            } elseif (in_array($origin = $request->getHeader('origin')[0], $this->origins)) {
+                $response = $response->withHeader('Access-Control-Allow-Origin', $origin)
+                    ->withHeader('Vary', $origin);
             }
-        } else {
-            $response = $response->withHeader('Access-Control-Allow-Origin', '*');
         }
 
         if ($this->allowCredential) {
