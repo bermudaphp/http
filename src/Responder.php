@@ -73,11 +73,8 @@ final class Responder
      */
     public function redirect(string $location, int $code = 302): ResponseInterface
     {
-        if ($code < 300 || $code > 308){
-            $code = 302;
-        }
-
-        return $this->respond($code)->withHeader(Header::location, $location);
+        return $this->respond(300 > $code || $code > 308 ? 302 : $code)
+            ->withHeader(Header::location, $location);
     }
 
     /**
