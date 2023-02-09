@@ -3,6 +3,7 @@
 namespace Bermuda\HTTP;
 
 use JsonException;
+use Bermuda\Arrayable;
 use Bermuda\String\Json;
 use Bermuda\HTTP\Headers\Header;
 use Psr\Container\ContainerInterface;
@@ -46,7 +47,8 @@ final class Responder
         $response = $this->responseFactory->createResponse($code ?? ($content === null ? 404 : 200));
 
         if ($content !== null) {
-
+            
+            if ($content instanceof Arrayable) $content = $content->toArray();
             if (!is_string($content) && !$content instanceof Stringable) {
                 $content = Json::encode($content);
                 $contentType = Application::json;
