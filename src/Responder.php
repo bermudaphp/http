@@ -3,7 +3,7 @@
 namespace Bermuda\HTTP;
 
 use JsonException;
-use Bermuda\Arrayable;
+use Bermuda\Stdlib\Arrayable;
 use Bermuda\String\Json;
 use Bermuda\HTTP\Headers\Header;
 use Psr\Container\ContainerInterface;
