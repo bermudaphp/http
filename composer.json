@@ -12,6 +12,6 @@
         "bermudaphp/stringy": "^2.0.2",
         "bermudaphp/http-exception": "^1.0",
         "bermudaphp/detector": "^1.0.1",
-        "bermudaphp/arrayable": "^1.2.2"
+        "bermudaphp/arrayable": "^2.0"
     }
 }
