@@ -12,6 +12,7 @@
         "bermudaphp/http-exception": "^1.0",
         "bermudaphp/detector": "^1.0.1",
         "bermudaphp/arrayable": "^1.0",
-        "bermudaphp/jsonable": "^1.0"
+        "bermudaphp/jsonable": "^1.0",
+        "tuupola/cors-middleware": "^1.4.3"
     }
 }
