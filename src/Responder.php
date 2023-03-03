@@ -3,8 +3,8 @@
 namespace Bermuda\HTTP;
 
 use JsonException;
+use Bermuda\Stdlib\Json;
 use Bermuda\Stdlib\Arrayable;
-use Bermuda\String\Json;
 use Bermuda\HTTP\Headers\Header;
 use Psr\Container\ContainerInterface;
 use Bermuda\Detector\FinfoDetector;
@@ -12,16 +12,17 @@ use Bermuda\Detector\MimeTypeDetector;
 use Bermuda\Detector\MimeTypes\Text;
 use Bermuda\Detector\MimeTypes\Application;
 use Bermuda\HTTP\Headers\ContentDisposition;
-use Psr\Http\Message\{ResponseFactoryInterface, ResponseInterface, StreamInterface};
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\StreamInterface;
 
 final class Responder
 {
     public function __construct(
         private ResponseFactoryInterface $responseFactory,
         private ?MimeTypeDetector        $detector = null,
-    )
-    {
-        $this->detector = $detector ?? new FinfoDetector();
+    ) {
+        $this->detector = $detector ?? new FinfoDetector;
     }
 
     /**
@@ -37,6 +38,25 @@ final class Responder
     }
 
     /**
+     * @return ResponseInterface
+     * @throws JsonException
+     */
+    public function noContent(): ResponseInterface
+    {
+        return $this->respond(204);
+    }
+
+    /**
+     * @param mixed|null $content
+     * @param string|null $contentType
+     * @return ResponseInterface
+     */
+    public function notFound(mixed $content = null, ?string $contentType = null): ResponseInterface
+    {
+        return $this->respond(404, $content);
+    }
+
+    /**
      * @param int $code
      * @param $content
      * @param string|null $contentType
@@ -44,24 +64,20 @@ final class Responder
      */
     public function respond(?int $code = null, $content = null, ?string $contentType = null): ResponseInterface
     {
-        $response = $this->responseFactory->createResponse($code ?? ($content === null ? 404 : 200));
+        $response = $this->responseFactory->createResponse($code ?? ($content === null ? 204 : 200));
 
         if ($content !== null) {
-            
             if ($content instanceof Arrayable) $content = $content->toArray();
-            if (!is_string($content) && !$content instanceof Stringable) {
+            if (!is_string($content) && !$content instanceof \Stringable) {
                 $content = Json::encode($content);
                 $contentType = Application::json;
             }
 
             ($response = $response->withHeader(Header::contentType, $contentType ??
                 $this->detector->detectMimeType($content)))
-                ->getBody()->write($content);
+                ->getBody()->write((string) $content);
 
-            if ($code === null && Json::isEmpty($content, false)) {
-                $response = $response->withStatus(404);
-            }
-
+            if ($code === null && Json::isEmpty($content, false)) $response = $response->withStatus(404);
             $response = $response->withHeader(Header::contentLength, (int) $response->getBody()->getSize());
         }
 
@@ -96,9 +112,7 @@ final class Responder
     public function file(StreamInterface $stream, bool $inline = true): ResponseInterface
     {
         $filename = basename($stream->getMetadata('uri'));
-        if (!$inline) {
-            $disposition = ContentDisposition::attachment($filename);
-        }
+        if (!$inline) $disposition = ContentDisposition::attachment($filename);
 
         return $this->respond(content: (string) $stream)
             ->withHeader(Header::contentDescription, 'File-transfer')
