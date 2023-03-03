@@ -15,7 +15,7 @@ class ConfigProvider extends \Bermuda\Config\ConfigProvider
     protected function getFactories(): array
     {
         return [
-            CorsMiddleware::class => static fn(ContainerInterface $c) => new CorsMiddleware($c->get(self::configKey)[self::corsKey]),
+            CorsMiddleware::class => static fn(ContainerInterface $c) => new CorsMiddleware($c->get(self::containerConfigKey)[self::corsKey]),
             Responder::class => static function(ContainerInterface $c) {
                 return new Responder($c->get(ResponseFactoryInterface::class), $c->get(MimeTypeDetector::class));
             }
