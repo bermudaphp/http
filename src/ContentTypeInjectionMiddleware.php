@@ -22,7 +22,7 @@ final class ContentTypeInjectionMiddleware implements MiddlewareInterface
         return self::injectContentType($response, $this->detector);
     }
 
-    public static function injectContentType(ResponseInterface $response, MimeTypeDetector $detector = null): ResponseInterface
+    public static function injectContentType(ResponseInterface $response, ?MimeTypeDetector $detector = null): ResponseInterface
     {
         if (!$response->hasHeader(Header::contentLength)
             && ($size = $response->getBody()->getSize()) !== null) {
